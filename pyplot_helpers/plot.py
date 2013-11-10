@@ -17,7 +17,7 @@ def p_value_from_labels(p_values_frame, a_label, b_label):
     return row
 
 
-def significance_boxplot(plot_context, data_vectors_by_label, colors=None):
+def significance_boxplot(axis, data_vectors_by_label, colors=None):
     '''
     Plot a box-plot based on the vectors provided.  Annotate the box-plot with arrows
     indicating the _$p$-value_ result from a statistical comparison of the
@@ -40,9 +40,9 @@ def significance_boxplot(plot_context, data_vectors_by_label, colors=None):
         colors = ['red', 'green']
     compare_results = significance_comparison(data_vectors_by_label)
 
-    plot_context.boxplot(data_vectors_by_label.values())
+    axis.boxplot(data_vectors_by_label.values())
 
-    yticks = plot_context.get_yticks()
+    yticks = axis.get_yticks()
     ytick_extent = yticks[1] - yticks[0]
 
     # Generate all unique combinations of vector pairs.
@@ -56,7 +56,7 @@ def significance_boxplot(plot_context, data_vectors_by_label, colors=None):
         p_value_row = p_value_from_labels(compare_results, *labels[pair])
         p_value = p_value_row['p-value']
         means = np.array([v.mean() for v in vectors])
-        plot_context.annotate('', xy=((pair[0] + 1) + .15, means[0]),
+        axis.annotate('', xy=((pair[0] + 1) + .15, means[0]),
                               xytext=((pair[1] + 1) - .15, means[1]),
                               arrowprops={'arrowstyle': '<->', 'color':
                                           colors[int(p_value < 0.05)],
@@ -66,11 +66,9 @@ def significance_boxplot(plot_context, data_vectors_by_label, colors=None):
             y_factor = 1
         else:
             y_factor = -1
-        plot_context.annotate('p-value: %.2g' % p_value,
-                              xy=(x_center, means.mean()),
-                              ha='center', fontsize=16,
-                              xytext=(x_center, y_factor * 0.65 * ytick_extent
-                                      + means.mean()),
-                              bbox=dict(boxstyle='round', fc='white',
-                                        alpha=0.9))
+        axis.annotate('p-value: %.2g' % p_value, xy=(x_center, means.mean()),
+                      ha='center', fontsize=16,
+                      xytext=(x_center, y_factor * 0.65 * ytick_extent +
+                              means.mean()),
+                      bbox=dict(boxstyle='round', fc='white', alpha=0.9))
     return compare_results
