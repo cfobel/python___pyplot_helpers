@@ -67,7 +67,7 @@ def significance_boxplot(axis, data_vectors_by_label, colors=None):
         else:
             y_factor = -1
         axis.annotate('p-value: %.2g' % p_value, xy=(x_center, means.mean()),
-                      ha='center', fontsize=16,
+                      ha='center', #fontsize=16,
                       xytext=(x_center, y_factor * 0.65 * ytick_extent +
                               means.mean()),
                       bbox=dict(boxstyle='round', fc='white', alpha=0.9))
